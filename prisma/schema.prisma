@@ -1,0 +1,60 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+enum UserType {
+  TEAM_LEADER
+  INDIVIDUAL
+  ADMIN
+}
+
+model User {
+  id                    String    @id @default(uuid())
+  firstName             String
+  lastName              String
+  email                 String    @unique
+  password              String
+  whatsappNumber        String
+  gender                Gender
+  userType              UserType  @default(INDIVIDUAL)
+  hasTeam               Boolean   @default(false)
+  emailVerified         Boolean   @default(false)
+  onboardingCompleted   Boolean   @default(false)
+  otp                   String?
+  otpExpiry             DateTime?
+  resetPasswordOtp     String?
+  resetPasswordOtpExpiry DateTime?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+  techSkills            TechSkill[]
+
+  @@map("users")
+}
+
+model TechSkill {
+  id          String   @id @default(uuid())
+  userId      String
+  skillName   String
+  proficiency Int      // 0 to 10
+  notes       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("tech_skills")
+}
+
