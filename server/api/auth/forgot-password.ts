@@ -1,6 +1,6 @@
-import { db } from '~/server/utils/db'
-import { generateOTP, getOTPExpiry } from '~/server/utils/otp'
-import { sendOTPEmail } from '~/server/utils/email'
+import { db } from '../../utils/db'
+import { generateOTP, getOTPExpiry } from '../../utils/otp'
+import { sendOTPEmail } from '../../utils/email'
 
 export default defineEventHandler(async (event) => {
   if (getMethod(event) !== 'POST') {

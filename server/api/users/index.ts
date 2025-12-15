@@ -1,5 +1,5 @@
-import { db } from '~/server/utils/db'
-import { getCurrentUser } from '~/server/utils/auth'
+import { db } from '../../utils/db'
+import { getCurrentUser } from '../../utils/auth'
 
 export default defineEventHandler(async (event) => {
   if (getMethod(event) !== 'GET') {

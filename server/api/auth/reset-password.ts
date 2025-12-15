@@ -1,6 +1,6 @@
-import { db } from '~/server/utils/db'
-import { hashPassword } from '~/server/utils/password'
-import { verifyToken } from '~/server/utils/auth'
+import { db } from '../../utils/db'
+import { hashPassword } from '../../utils/password'
+import { verifyToken } from '../../utils/auth'
 
 export default defineEventHandler(async (event) => {
   if (getMethod(event) !== 'POST') {

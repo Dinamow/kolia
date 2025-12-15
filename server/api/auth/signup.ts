@@ -1,95 +1,66 @@
-import { db } from '~/server/utils/db'
-import { hashPassword } from '~/server/utils/password'
-import { generateOTP, getOTPExpiry } from '~/server/utils/otp'
-import { sendOTPEmail } from '~/server/utils/email'
+import { db } from "../../utils/db";
+import { hashPassword } from "../../utils/password";
+import { generateOTP, getOTPExpiry } from "../../utils/otp";
+import { sendOTPEmail } from "../../utils/email";
+import { SignupSchema } from "../../utils/validation";
 
 export default defineEventHandler(async (event) => {
-  if (getMethod(event) !== 'POST') {
+  if (getMethod(event) !== "POST") {
     throw createError({
       statusCode: 405,
-      message: 'Method not allowed',
-    })
+      message: "Method not allowed",
+    });
   }
 
-  const body = await readBody(event)
-  const { firstName, lastName, email, password, whatsappNumber, gender, userType } = body
+  const body = await readBody(event);
 
-  // Validation
-  if (!firstName || !lastName || !email || !password || !whatsappNumber || !gender || !userType) {
+  // Validate with Zod
+  const result = SignupSchema.safeParse(body);
+
+  if (!result.success) {
     throw createError({
       statusCode: 400,
-      message: 'All fields are required',
-    })
+      message: result.error.errors[0].message,
+      data: result.error.errors,
+    });
   }
 
-  // Reject ADMIN userType from endpoint
-  if (userType === 'ADMIN') {
+  const {
+    firstName,
+    lastName,
+    email,
+    password,
+    whatsappNumber,
+    gender,
+    userType,
+  } = result.data;
+
+  // Reject ADMIN userType from endpoint (extra safety check)
+  if (userType === "ADMIN") {
     throw createError({
       statusCode: 403,
-      message: 'Admin users cannot be created through this endpoint',
-    })
-  }
-
-  // Validate userType
-  if (!['TEAM_LEADER', 'INDIVIDUAL'].includes(userType)) {
-    throw createError({
-      statusCode: 400,
-      message: 'Invalid user type',
-    })
-  }
-
-  // Validate email format
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-  if (!emailRegex.test(email)) {
-    throw createError({
-      statusCode: 400,
-      message: 'Invalid email format',
-    })
-  }
-
-  // Validate WhatsApp number (Egypt: +20 followed by 10 digits)
-  const whatsappRegex = /^\+20\d{10}$/
-  if (!whatsappRegex.test(whatsappNumber)) {
-    throw createError({
-      statusCode: 400,
-      message: 'WhatsApp number must be in format +20XXXXXXXXXX (Egypt)',
-    })
-  }
-
-  // Validate password length
-  if (password.length < 8) {
-    throw createError({
-      statusCode: 400,
-      message: 'Password must be at least 8 characters',
-    })
-  }
-
-  // Validate gender
-  if (!['MALE', 'FEMALE', 'OTHER'].includes(gender)) {
-    throw createError({
-      statusCode: 400,
-      message: 'Invalid gender',
-    })
+      message: "Admin users cannot be created through this endpoint",
+    });
   }
 
   // Check if email already exists
   const existingUser = await db.user.findUnique({
     where: { email },
-  })
+  });
 
   if (existingUser) {
     throw createError({
       statusCode: 409,
-      message: 'Email already registered',
-    })
+      message: "Email already registered",
+    });
   }
 
   // Hash password
-  const hashedPassword = await hashPassword(password)
+  const hashedPassword = await hashPassword(password);
 
   // Generate OTP
-  const otp = generateOTP()
-  const otpExpiry = getOTPExpiry(15)
+  const otp = generateOTP();
+  const otpExpiry = getOTPExpiry(15);
 
   // Create user
   const user = await db.user.create({
@@ -112,20 +83,20 @@ export default defineEventHandler(async (event) => {
       firstName: true,
       lastName: true,
     },
-  })
+  });
 
   // Send OTP email
   try {
-    await sendOTPEmail(email, otp, 'verification')
+    await sendOTPEmail(email, otp, "verification");
   } catch (error) {
     // Log error but don't fail the request
-    console.error('Failed to send OTP email:', error)
+    console.error("Failed to send OTP email:", error);
   }
 
   return {
     success: true,
-    message: 'User created successfully. Please check your email for verification OTP.',
+    message:
+      "User created successfully. Please check your email for verification OTP.",
     user,
-  }
-})
-
+  };
+});

@@ -1,4 +1,4 @@
-import { getCurrentUser } from '~/server/utils/auth'
+import { getCurrentUser } from '../../utils/auth'
 
 export default defineEventHandler(async (event) => {
   if (getMethod(event) !== 'GET') {

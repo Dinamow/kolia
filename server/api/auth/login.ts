@@ -1,69 +1,75 @@
-import { db } from '~/server/utils/db'
-import { comparePassword } from '~/server/utils/password'
-import { generateToken } from '~/server/utils/auth'
+import { db } from "../../utils/db";
+import { comparePassword } from "../../utils/password";
+import { generateToken } from "../../utils/auth";
+import { LoginSchema } from "../../utils/validation";
 
 export default defineEventHandler(async (event) => {
-  if (getMethod(event) !== 'POST') {
+  if (getMethod(event) !== "POST") {
     throw createError({
       statusCode: 405,
-      message: 'Method not allowed',
-    })
+      message: "Method not allowed",
+    });
   }
 
-  const body = await readBody(event)
-  const { email, password } = body
+  const body = await readBody(event);
 
-  if (!email || !password) {
+  // Validate with Zod
+  const result = LoginSchema.safeParse(body);
+
+  if (!result.success) {
     throw createError({
       statusCode: 400,
-      message: 'Email and password are required',
-    })
+      message: result.error.errors[0].message,
+      data: result.error.errors,
+    });
   }
+
+  const { email, password } = result.data;
 
   const user = await db.user.findUnique({
     where: { email },
-  })
+  });
 
   if (!user) {
     throw createError({
       statusCode: 401,
-      message: 'Invalid email or password',
-    })
+      message: "Invalid email or password",
+    });
   }
 
-  const isPasswordValid = await comparePassword(password, user.password)
+  const isPasswordValid = await comparePassword(password, user.password);
 
   if (!isPasswordValid) {
     throw createError({
       statusCode: 401,
-      message: 'Invalid email or password',
-    })
+      message: "Invalid email or password",
+    });
   }
 
   if (!user.emailVerified) {
     throw createError({
       statusCode: 403,
-      message: 'Please verify your email first',
-    })
+      message: "Please verify your email first",
+    });
   }
 
   // Generate token
   const token = generateToken({
     userId: user.id,
     email: user.email,
-  })
+  });
 
   // Set cookie
-  setCookie(event, 'auth-token', token, {
+  setCookie(event, "auth-token", token, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'strict',
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
     maxAge: 60 * 60 * 24 * 7, // 7 days
-  })
+  });
 
   return {
     success: true,
-    message: 'Login successful',
+    message: "Login successful",
     user: {
       id: user.id,
       email: user.email,
@@ -74,6 +80,5 @@ export default defineEventHandler(async (event) => {
       onboardingCompleted: user.onboardingCompleted,
     },
     token,
-  }
-})
-
+  };
+});

@@ -1,6 +1,6 @@
-import { db } from '~/server/utils/db'
-import { isOTPExpired } from '~/server/utils/otp'
-import { generateToken } from '~/server/utils/auth'
+import { db } from '../../utils/db'
+import { isOTPExpired } from '../../utils/otp'
+import { generateToken } from '../../utils/auth'
 
 export default defineEventHandler(async (event) => {
   if (getMethod(event) !== 'POST') {
