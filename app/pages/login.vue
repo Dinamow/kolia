@@ -1,5 +1,7 @@
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+  <div
+    class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8"
+  >
     <div class="max-w-md w-full space-y-8">
       <div>
         <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
@@ -7,19 +9,32 @@
         </h2>
         <p class="mt-2 text-center text-sm text-gray-600">
           Or
-          <NuxtLink to="/signup" class="font-medium text-primary-600 hover:text-primary-500">
+          <NuxtLink
+            to="/signup"
+            class="font-medium text-primary-600 hover:text-primary-500"
+          >
             create a new account
           </NuxtLink>
         </p>
       </div>
       <UForm :state="form" class="mt-8 space-y-6" @submit="onSubmit">
-        <UFormGroup label="Email" name="email" required>
-          <UInput v-model="form.email" type="email" placeholder="john@example.com" />
-        </UFormGroup>
+        <UFormField label="Email" name="email" required>
+          <UInput
+            class="w-full"
+            v-model="form.email"
+            type="email"
+            placeholder="john@example.com"
+          />
+        </UFormField>
 
-        <UFormGroup label="Password" name="password" required>
-          <UInput v-model="form.password" type="password" placeholder="••••••••" />
-        </UFormGroup>
+        <UFormField label="Password" name="password" required>
+          <UInput
+            v-model="form.password"
+            type="password"
+            placeholder="••••••••"
+            class="w-full"
+          />
+        </UFormField>
 
         <div class="flex items-center justify-end">
           <NuxtLink
@@ -38,12 +53,7 @@
           class="mt-4"
         />
 
-        <UButton
-          type="submit"
-          block
-          :loading="loading"
-          class="mt-6"
-        >
+        <UButton type="submit" block :loading="loading" class="mt-6">
           Sign In
         </UButton>
       </UForm>
@@ -52,49 +62,51 @@
 </template>
 
 <script setup lang="ts">
+import { LoginSchema, type LoginInput } from "../../server/utils/validation";
+
 definePageMeta({
   layout: false,
-})
+});
 
-const form = reactive({
-  email: '',
-  password: '',
-})
+const form = reactive<LoginInput>({
+  email: "",
+  password: "",
+});
 
-const loading = ref(false)
-const error = ref('')
+const loading = ref(false);
+const error = ref("");
 
 const onSubmit = async () => {
-  error.value = ''
+  error.value = "";
 
-  if (!form.email || !form.password) {
-    error.value = 'Email and password are required'
-    return
+  // Validate with Zod
+  const result = LoginSchema.safeParse(form);
+
+  if (!result.success) {
+    error.value = result.error.issues[0]?.message || "Validation failed";
+    return;
   }
 
-  loading.value = true
+  loading.value = true;
 
   try {
-    const response = await $fetch('/api/auth/login', {
-      method: 'POST',
-      body: {
-        email: form.email,
-        password: form.password,
-      },
-    })
+    const response = await $fetch("/api/auth/login", {
+      method: "POST",
+      body: result.data,
+    });
 
     // Redirect based on onboarding status
     if (response.user.onboardingCompleted) {
-      await navigateTo('/dashboard')
+      await navigateTo("/dashboard");
     } else {
-      await navigateTo('/onboarding/tech-skills')
+      await navigateTo("/onboarding/tech-skills");
     }
   } catch (err: unknown) {
-    const errorData = err as { data?: { message?: string }; message?: string }
-    error.value = errorData.data?.message || errorData.message || 'An error occurred'
+    const errorData = err as { data?: { message?: string }; message?: string };
+    error.value =
+      errorData.data?.message || errorData.message || "An error occurred";
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 </script>
-

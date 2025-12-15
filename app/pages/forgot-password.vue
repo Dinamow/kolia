@@ -1,5 +1,7 @@
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+  <div
+    class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8"
+  >
     <div class="max-w-md w-full space-y-8">
       <div>
         <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
@@ -10,9 +12,14 @@
         </p>
       </div>
       <UForm :state="form" class="mt-8 space-y-6" @submit="onSubmit">
-        <UFormGroup label="Email" name="email" required>
-          <UInput v-model="form.email" type="email" placeholder="john@example.com" />
-        </UFormGroup>
+        <UFormField label="Email" name="email" required>
+          <UInput
+            v-model="form.email"
+            type="email"
+            placeholder="john@example.com"
+            class="w-full"
+          />
+        </UFormField>
 
         <UAlert
           v-if="error"
@@ -24,18 +31,13 @@
 
         <UAlert
           v-if="success"
-          color="green"
+          color="success"
           variant="soft"
           :title="success"
           class="mt-4"
         />
 
-        <UButton
-          type="submit"
-          block
-          :loading="loading"
-          class="mt-6"
-        >
+        <UButton type="submit" block :loading="loading" class="mt-6">
           Send Reset OTP
         </UButton>
 
@@ -55,49 +57,49 @@
 <script setup lang="ts">
 definePageMeta({
   layout: false,
-})
+});
 
 const form = reactive({
-  email: '',
-})
+  email: "",
+});
 
-const loading = ref(false)
-const error = ref('')
-const success = ref('')
+const loading = ref(false);
+const error = ref("");
+const success = ref("");
 
 const onSubmit = async () => {
-  error.value = ''
-  success.value = ''
+  error.value = "";
+  success.value = "";
 
   if (!form.email) {
-    error.value = 'Email is required'
-    return
+    error.value = "Email is required";
+    return;
   }
 
-  loading.value = true
+  loading.value = true;
 
   try {
-    const response = await $fetch('/api/auth/forgot-password', {
-      method: 'POST',
+    const response = await $fetch("/api/auth/forgot-password", {
+      method: "POST",
       body: {
         email: form.email,
       },
-    })
+    });
 
-    success.value = response.message
+    success.value = response.message;
     // Redirect to reset password page after a short delay
     setTimeout(async () => {
       await navigateTo({
-        path: '/reset-password',
+        path: "/reset-password",
         query: { email: form.email },
-      })
-    }, 2000)
+      });
+    }, 2000);
   } catch (err: unknown) {
-    const errorData = err as { data?: { message?: string }; message?: string }
-    error.value = errorData.data?.message || errorData.message || 'An error occurred'
+    const errorData = err as { data?: { message?: string }; message?: string };
+    error.value =
+      errorData.data?.message || errorData.message || "An error occurred";
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 </script>
-
