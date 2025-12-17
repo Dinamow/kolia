@@ -1,0 +1,127 @@
+{
+        // Font Settings
+        "chat.fontFamily": "Fira Code",
+        "editor.fontFamily": "Fira Code",
+        "editor.fontLigatures": true,
+        "terminal.integrated.fontFamily": "Fira Code",
+        "editor.fontSize": 15,
+        "terminal.integrated.fontSize": 14,
+
+        // Editor Behavior
+        "editor.formatOnSave": true,
+        "editor.formatOnPaste": true,
+        "editor.tabSize": 2,
+        "editor.insertSpaces": true,
+        "editor.detectIndentation": true,
+        "editor.wordWrap": "on",
+        "editor.linkedEditing": true,
+        "editor.bracketPairColorization.enabled": true,
+        "editor.guides.bracketPairs": "active",
+        "editor.cursorBlinking": "smooth",
+        "editor.cursorSmoothCaretAnimation": "on",
+        "editor.smoothScrolling": true,
+        "editor.minimap.enabled": true,
+        "editor.minimap.maxColumn": 120,
+        "editor.rulers": [80, 120],
+
+        // File Exclusions (for better performance)
+        "files.exclude": {
+                "**/node_modules": true,
+                "**/.git": true,
+                "**/.DS_Store": true
+        },
+        "search.exclude": {
+                "**/node_modules": true,
+                "**/package-lock.json": true,
+                "**/yarn.lock": true,
+                "**/.git": true
+        },
+
+        // File Associations
+        "files.associations": {
+                "*.prisma": "prisma",
+                "*.sql": "sql",
+                ".env*": "dotenv"
+        },
+
+        // JavaScript/TypeScript Settings
+        "javascript.updateImportsOnFileMove.enabled": "always",
+        "javascript.suggest.autoImports": true,
+        "javascript.suggest.completeFunctionCalls": true,
+        "javascript.inlayHints.parameterNames.enabled": "all",
+        "javascript.inlayHints.functionLikeReturnTypes.enabled": true,
+
+        // Prisma Settings
+        "[prisma]": {
+                "editor.defaultFormatter": "Prisma.prisma",
+                "editor.formatOnSave": true
+        },
+
+        // JSON Settings
+        "[json]": {
+                "editor.defaultFormatter": "esbenp.prettier-vscode",
+                "editor.formatOnSave": true
+        },
+        "[jsonc]": {
+                "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+
+        // JavaScript Settings
+        "[javascript]": {
+                "editor.defaultFormatter": "esbenp.prettier-vscode",
+                "editor.formatOnSave": true
+        },
+
+        // SQL Settings
+        "[sql]": {
+                "editor.formatOnSave": false
+        },
+
+        "terminal.integrated.cursorBlinking": true,
+        "terminal.integrated.cursorStyle": "line",
+        "terminal.integrated.scrollback": 10000,
+
+        // Git Settings
+        "git.autofetch": true,
+        "git.confirmSync": false,
+        "git.enableSmartCommit": true,
+        "scm.defaultViewMode": "tree",
+
+        // Workbench Settings
+        "workbench.iconTheme": "material-icon-theme",
+        "workbench.tree.indent": 20,
+        "workbench.list.smoothScrolling": true,
+        "breadcrumbs.enabled": true,
+
+        // Explorer Settings
+        "explorer.confirmDelete": false,
+        "explorer.confirmDragAndDrop": false,
+        "explorer.compactFolders": false,
+
+        // Emmet
+        "emmet.includeLanguages": {
+                "javascript": "javascriptreact"
+        },
+
+        // Code Lens
+        "diffEditor.codeLens": true,
+
+        // Error Lens (if installed)
+        "errorLens.enabled": true,
+        "errorLens.enabledDiagnosticLevels": ["error", "warning", "info"],
+
+        // ESLint (if installed)
+        "eslint.enable": true,
+        "eslint.validate": ["javascript"],
+
+        // Prettier (if installed)
+        "prettier.singleQuote": true,
+        "prettier.semi": true,
+        "prettier.tabWidth": 2,
+        "prettier.trailingComma": "es5",
+        "prettier.printWidth": 100,
+
+        // Path Intellisense
+        "path-intellisense.autoSlashAfterDirectory": true,
+        "path-intellisense.extensionOnImport": true
+}
