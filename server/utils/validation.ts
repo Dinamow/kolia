@@ -10,7 +10,7 @@ export const UserTypeSchema = z.enum(["TEAM_LEADER", "INDIVIDUAL"]);
 export const SignupSchema = z.object({
   firstName: z.string().min(1, "First name is required").trim(),
   lastName: z.string().min(1, "Last name is required").trim(),
-  email: z.string().email("Invalid email format").toLowerCase().trim(),
+  email: z.email("Invalid email format").toLowerCase().trim(),
   password: z.string().min(8, "Password must be at least 8 characters"),
   whatsappNumber: z
     .string()
@@ -32,7 +32,7 @@ export const SignupFormSchema = SignupSchema.extend({
 
 // Login schema
 export const LoginSchema = z.object({
-  email: z.string().email("Invalid email format").toLowerCase().trim(),
+  email: z.email("Invalid email format").toLowerCase().trim(),
   password: z.string().min(1, "Password is required"),
 });
 

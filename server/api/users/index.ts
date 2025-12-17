@@ -2,7 +2,7 @@ import { db } from '../../utils/db'
 import { getCurrentUser } from '../../utils/auth'
 
 export default defineEventHandler(async (event) => {
-  if (getMethod(event) !== 'GET') {
+  if (event.method !== 'GET') {
     throw createError({
       statusCode: 405,
       message: 'Method not allowed',

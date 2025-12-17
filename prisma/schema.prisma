@@ -2,12 +2,13 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client"
+
+  output = "../generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 enum Gender {
@@ -23,24 +24,24 @@ enum UserType {
 }
 
 model User {
-  id                    String    @id @default(uuid())
-  firstName             String
-  lastName              String
-  email                 String    @unique
-  password              String
-  whatsappNumber        String
-  gender                Gender
-  userType              UserType  @default(INDIVIDUAL)
-  hasTeam               Boolean   @default(false)
-  emailVerified         Boolean   @default(false)
-  onboardingCompleted   Boolean   @default(false)
-  otp                   String?
-  otpExpiry             DateTime?
-  resetPasswordOtp     String?
+  id                     String      @id @default(uuid())
+  firstName              String
+  lastName               String
+  email                  String      @unique
+  password               String
+  whatsappNumber         String
+  gender                 Gender
+  userType               UserType    @default(INDIVIDUAL)
+  hasTeam                Boolean     @default(false)
+  emailVerified          Boolean     @default(false)
+  onboardingCompleted    Boolean     @default(false)
+  otp                    String?
+  otpExpiry              DateTime?
+  resetPasswordOtp       String?
   resetPasswordOtpExpiry DateTime?
-  createdAt             DateTime  @default(now())
-  updatedAt             DateTime  @updatedAt
-  techSkills            TechSkill[]
+  createdAt              DateTime    @default(now())
+  updatedAt              DateTime    @updatedAt
+  techSkills             TechSkill[]
 
   @@map("users")
 }
@@ -49,7 +50,7 @@ model TechSkill {
   id          String   @id @default(uuid())
   userId      String
   skillName   String
-  proficiency Int      // 0 to 10
+  proficiency Int // 0 to 10
   notes       String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -57,4 +58,3 @@ model TechSkill {
 
   @@map("tech_skills")
 }
-

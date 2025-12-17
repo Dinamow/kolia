@@ -4,7 +4,7 @@ import { generateToken } from "../../utils/auth";
 import { LoginSchema } from "../../utils/validation";
 
 export default defineEventHandler(async (event) => {
-  if (getMethod(event) !== "POST") {
+  if (event.method !== "POST") {
     throw createError({
       statusCode: 405,
       message: "Method not allowed",
@@ -19,8 +19,8 @@ export default defineEventHandler(async (event) => {
   if (!result.success) {
     throw createError({
       statusCode: 400,
-      message: result.error.errors[0].message,
-      data: result.error.errors,
+      message: result.error.message,
+      data: result.error.issues,
     });
   }
 

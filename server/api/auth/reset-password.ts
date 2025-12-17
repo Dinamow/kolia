@@ -3,7 +3,7 @@ import { hashPassword } from '../../utils/password'
 import { verifyToken } from '../../utils/auth'
 
 export default defineEventHandler(async (event) => {
-  if (getMethod(event) !== 'POST') {
+  if (event.method !== 'POST') {
     throw createError({
       statusCode: 405,
       message: 'Method not allowed',

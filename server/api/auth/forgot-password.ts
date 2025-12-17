@@ -3,7 +3,7 @@ import { generateOTP, getOTPExpiry } from '../../utils/otp'
 import { sendOTPEmail } from '../../utils/email'
 
 export default defineEventHandler(async (event) => {
-  if (getMethod(event) !== 'POST') {
+  if (event.method !== 'POST') {
     throw createError({
       statusCode: 405,
       message: 'Method not allowed',

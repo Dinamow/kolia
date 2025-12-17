@@ -5,7 +5,7 @@ import { sendOTPEmail } from "../../utils/email";
 import { SignupSchema } from "../../utils/validation";
 
 export default defineEventHandler(async (event) => {
-  if (getMethod(event) !== "POST") {
+  if (event.method !== "POST") {
     throw createError({
       statusCode: 405,
       message: "Method not allowed",
@@ -20,8 +20,8 @@ export default defineEventHandler(async (event) => {
   if (!result.success) {
     throw createError({
       statusCode: 400,
-      message: result.error.errors[0].message,
-      data: result.error.errors,
+      message: result.error.message,
+      data: result.error.issues,
     });
   }
 
@@ -36,7 +36,7 @@ export default defineEventHandler(async (event) => {
   } = result.data;
 
   // Reject ADMIN userType from endpoint (extra safety check)
-  if (userType === "ADMIN") {
+  if (userType.toUpperCase() === "ADMIN") {
     throw createError({
       statusCode: 403,
       message: "Admin users cannot be created through this endpoint",
