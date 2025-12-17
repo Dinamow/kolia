@@ -1,4 +1,4 @@
-import { db } from '../../utils/db'
+import db from '../../utils/db'
 import { isOTPExpired } from '../../utils/otp'
 import { generateToken } from '../../utils/auth'
 

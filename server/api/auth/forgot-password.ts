@@ -1,4 +1,4 @@
-import { db } from '../../utils/db'
+import db from '../../utils/db'
 import { generateOTP, getOTPExpiry } from '../../utils/otp'
 import { sendOTPEmail } from '../../utils/email'
 

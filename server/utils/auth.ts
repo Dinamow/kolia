@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken'
-import { db } from './db'
+import db from './db'
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production'
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '7d'

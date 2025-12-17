@@ -1,4 +1,4 @@
-import { db } from "../../utils/db";
+import db from "../../utils/db";
 import { getCurrentUser } from "../../utils/auth";
 import { TechSkillsSchema } from "../../utils/validation";
 

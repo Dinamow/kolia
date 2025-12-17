@@ -1,4 +1,4 @@
-import { db } from "../../utils/db";
+import db from "../../utils/db";
 import { comparePassword } from "../../utils/password";
 import { generateToken } from "../../utils/auth";
 import { LoginSchema } from "../../utils/validation";

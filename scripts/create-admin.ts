@@ -1,4 +1,5 @@
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient } from '../lib/prisma/client'
+import { PrismaPg } from '@prisma/adapter-pg';
 import * as readline from 'readline'
 import * as bcrypt from 'bcryptjs'
 import * as dotenv from 'dotenv'
@@ -6,13 +7,11 @@ import * as dotenv from 'dotenv'
 // Load environment variables
 dotenv.config()
 
-const prisma = new PrismaClient({
-  datasources: {
-    db: {
-      url: process.env.DATABASE_URL,
-    },
-  },
-})
+const adapter = new PrismaPg({ 
+  connectionString: process.env.DATABASE_URL 
+});
+
+const prisma = new PrismaClient({ adapter })
 
 const rl = readline.createInterface({
   input: process.stdin,
