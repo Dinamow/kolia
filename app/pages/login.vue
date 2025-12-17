@@ -1,7 +1,5 @@
 <template>
-  <div
-    class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8"
-  >
+  <div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
     <div class="max-w-md w-full space-y-8">
       <div>
         <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
@@ -9,49 +7,35 @@
         </h2>
         <p class="mt-2 text-center text-sm text-gray-600">
           Or
-          <NuxtLink
-            to="/signup"
-            class="font-medium text-primary-600 hover:text-primary-500"
-          >
+          <NuxtLink to="/signup" class="font-medium text-primary-600 hover:text-primary-500">
             create a new account
           </NuxtLink>
         </p>
       </div>
       <UForm :state="form" class="mt-8 space-y-6" @submit="onSubmit">
         <UFormField label="Email" name="email" required>
-          <UInput
-            class="w-full"
-            v-model="form.email"
-            type="email"
-            placeholder="john@example.com"
-          />
+          <UInput class="w-full" v-model="form.email" type="email" placeholder="john@example.com" />
         </UFormField>
 
         <UFormField label="Password" name="password" required>
-          <UInput
-            v-model="form.password"
-            type="password"
-            placeholder="••••••••"
-            class="w-full"
-          />
+          <div class="relative">
+            <UInput v-model="form.password" :type="showPassword ? 'text' : 'password'" placeholder="••••••••"
+              class="w-full pr-10" />
+            <button type="button" @click="showPassword = !showPassword"
+              class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700">
+              <Icon v-if="showPassword" name="mdi:eye-off" />
+              <Icon v-else name="mdi:eye" />
+            </button>
+          </div>
         </UFormField>
 
         <div class="flex items-center justify-end">
-          <NuxtLink
-            to="/forgot-password"
-            class="text-sm font-medium text-primary-600 hover:text-primary-500"
-          >
+          <NuxtLink to="/forgot-password" class="text-sm font-medium text-primary-600 hover:text-primary-500">
             Forgot password?
           </NuxtLink>
         </div>
 
-        <UAlert
-          v-if="error"
-          color="error"
-          variant="soft"
-          :title="error"
-          class="mt-4"
-        />
+        <UAlert v-if="error" color="error" variant="soft" :title="error" class="mt-4" />
 
         <UButton type="submit" block :loading="loading" class="mt-6">
           Sign In
@@ -75,6 +59,7 @@ const form = reactive<LoginInput>({
 
 const loading = ref(false);
 const error = ref("");
+const showPassword = ref(false);
 
 const onSubmit = async () => {
   error.value = "";
