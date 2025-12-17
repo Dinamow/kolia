@@ -78,7 +78,6 @@ export default defineEventHandler(async (event) => {
       userType: user.userType,
       emailVerified: user.emailVerified,
       onboardingCompleted: user.onboardingCompleted,
-    },
-    token,
+    }
   };
 });

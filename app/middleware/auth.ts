@@ -1,16 +1,7 @@
 export default defineNuxtRouteMiddleware(async (to, from) => {
-  const token = useCookie('auth-token')
-
-  if (!token.value) {
-    return navigateTo('/login')
-  }
 
   try {
-    const response = await $fetch('/api/auth/me', {
-      headers: {
-        Authorization: `Bearer ${token.value}`,
-      },
-    })
+    const response = await $fetch('/api/auth/me')
 
     if (!response.user) {
       return navigateTo('/login')

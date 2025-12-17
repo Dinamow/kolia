@@ -84,7 +84,7 @@ const onSubmit = async () => {
     if (response.user.onboardingCompleted) {
       await navigateTo("/dashboard");
     } else {
-      await navigateTo("/onboarding/tech-skills");
+      await navigateTo("/onboarding/tech-skills", { replace: true });
     }
   } catch (err: unknown) {
     const errorData = err as { data?: { message?: string }; message?: string };
