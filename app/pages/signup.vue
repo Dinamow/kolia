@@ -1,65 +1,80 @@
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-    <div class="max-w-md w-full space-y-8">
-      <div>
-        <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
-          Create your account
-        </h2>
-        <p class="mt-2 text-center text-sm text-gray-600">
-          Or
-          <NuxtLink to="/login" class="font-medium text-primary-600 hover:text-primary-500">
-            sign in to your account
+  <div class="min-h-screen bg-gradient-to-br from-white to-cornflower-50 flex auth-page">
+    <!-- Left Section: Illustration -->
+    <div
+      class="hidden lg:flex lg:w-1/2 items-center justify-center bg-gradient-to-br from-cornflower-600 to-cornflower-700 p-12">
+      <div class="text-center flex flex-col items-center text-white">
+        <img width="48" height="48" src="https://img.icons8.com/pulsar-color/48/related-companies.png"
+          alt="related-companies" class="animated-icon" />
+        <h3 class="text-4xl font-bold mb-4">Join Our Community</h3>
+        <p class="text-cornflower-100 text-lg max-w-sm">
+          Create an account and start collaborating with your team today.
+        </p>
+      </div>
+    </div>
+
+    <!-- Right Section: Form -->
+    <div
+      class="w-full lg:w-1/2 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-12 overflow-y-auto max-h-screen">
+      <div class="w-full max-w-md">
+        <!-- Header -->
+        <div class="text-center mb-8">
+          <h2 class="text-4xl font-bold text-cornflower-900 mb-2">
+            Create your account
+          </h2>
+        </div>
+        <UForm :state="form" class="space-y-6" @submit="onSubmit">
+          <div class="grid grid-cols-2 gap-4">
+            <MyInput v-model="form.firstName" type="text" label="First Name" name="firstName" placeholder="John"
+              variant="outline" required />
+            <MyInput v-model="form.lastName" type="text" label="Last Name" name="lastName" placeholder="Doe"
+              variant="outline" required />
+          </div>
+
+          <MyInput v-model="form.email" type="email" label="Email Address" name="email" placeholder="john@example.com"
+            variant="outline" required />
+
+          <MyInput v-model="form.password" :type="showPassword ? 'text' : 'password'" label="Password" name="password"
+            placeholder="••••••••" variant="outline" required>
+            <template #append>
+              <button type="button" @click="showPassword = !showPassword"
+                class="text-sm font-medium text-primary hover:text-cornflower-700 focus:outline-none transition-colors">
+                {{ showPassword ? "Hide" : "Show" }}
+              </button>
+            </template>
+          </MyInput>
+
+          <MyInput v-model="form.confirmPassword" type="password" label="Confirm Password" name="confirmPassword"
+            placeholder="••••••••" variant="outline" required />
+
+          <MyInput v-model="form.whatsappNumber" type="tel" label="WhatsApp Number" name="whatsappNumber"
+            placeholder="+20XXXXXXXXXX" variant="outline" required />
+
+          <div class="grid grid-cols-2 gap-4">
+            <UFormField label="Gender" name="gender" required>
+              <URadioGroup v-model="form.gender" :items="genderOptions" :options="genderOptions" color="neutral"
+                class="w-full" />
+            </UFormField>
+
+            <UFormField label="User Type" name="userType" required>
+              <URadioGroup v-model="form.userType" :items="userTypeOptions" :options="userTypeOptions" color="neutral"
+                class="w-full" />
+            </UFormField>
+          </div>
+
+          <UAlert v-if="error" color="error" variant="soft" :title="error" class="mt-4" />
+
+          <MyButton variant="primary" type="submit" :loading="loading" block>
+            Sign Up
+          </MyButton>
+        </UForm>
+        <p class="text-cornflower-600">
+          Already have an account?
+          <NuxtLink to="/login" class="font-semibold text-cornflower-600 hover:text-cornflower-700 transition-colors">
+            Sign in here
           </NuxtLink>
         </p>
       </div>
-      <UForm :state="form" class="mt-8 space-y-6" @submit="onSubmit">
-        <UFormField label="First Name" name="firstName" required>
-          <UInput v-model="form.firstName" placeholder="John" class="w-full" />
-        </UFormField>
-
-        <UFormField label="Last Name" name="lastName" required>
-          <UInput v-model="form.lastName" placeholder="Doe" class="w-full" />
-        </UFormField>
-
-        <UFormField label="Email" name="email" required>
-          <UInput v-model="form.email" type="email" placeholder="john@example.com" class="w-full" />
-        </UFormField>
-
-        <UFormField label="Password" name="password" required>
-          <div class="relative">
-            <UInput v-model="form.password" :type="showPassword ? 'text' : 'password'" placeholder="••••••••"
-              class="w-full pr-10" />
-            <button type="button" @click="showPassword = !showPassword"
-              class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700">
-              <Icon v-if="showPassword" name="mdi:eye-off" />
-              <Icon v-else name="mdi:eye" />
-            </button>
-          </div>
-        </UFormField>
-
-        <UFormField label="Confirm Password" name="confirmPassword" required>
-          <UInput v-model="form.confirmPassword" type="password" placeholder="••••••••" class="w-full" />
-        </UFormField>
-
-        <UFormField label="WhatsApp Number" name="whatsappNumber" required>
-          <UInput v-model="form.whatsappNumber" placeholder="+20XXXXXXXXXX" class="w-full" />
-        </UFormField>
-
-        <UFormField label="Gender" name="gender" required>
-          <URadioGroup v-model="form.gender" :items="genderOptions" :options="genderOptions" class="w-full" />
-        </UFormField>
-
-        <UFormField label="User Type" name="userType" required>
-
-          <URadioGroup v-model="form.userType" :items="userTypeOptions" :options="userTypeOptions" class="w-full" />
-        </UFormField>
-
-        <UAlert v-if="error" color="error" variant="soft" :title="error" class="mt-4" />
-
-        <UButton type="submit" block :loading="loading" class="mt-6">
-          Sign Up
-        </UButton>
-      </UForm>
     </div>
   </div>
 </template>
@@ -138,3 +153,55 @@ const onSubmit = async () => {
   }
 };
 </script>
+
+<style scoped>
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+.my-form-field :deep([data-slot="label"]) {
+  color: var(--label-color, var(--color-cornflower-900)) !important;
+}
+
+.animated-icon {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Page-scoped overrides for Nuxt UI form labels and radio controls */
+.auth-page :deep([data-slot="label"]) {
+  color: var(--color-primary) !important;
+}
+
+.auth-page :deep([data-state="checked"] [data-slot="label"]) {
+  color: var(--color-primary) !important;
+}
+
+.auth-page :deep([data-slot="indicator"]) {
+  background-color: var(--color-primary) !important;
+}
+
+.auth-page :deep([data-slot="base"]:focus-visible) {
+  outline-color: var(--color-primary) !important;
+}
+
+.auth-page :deep([data-slot="label"]::after) {
+  color: var(--color-primary) !important;
+}
+
+.auth-page :deep(input[type="radio"]) {
+  accent-color: var(--color-primary);
+}
+
+.auth-page :deep(input[type="radio"]:focus-visible) {
+  outline: 2px solid var(--color-cornflower-400);
+  outline-offset: 2px;
+}
+</style>
