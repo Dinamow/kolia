@@ -1,13 +1,9 @@
-import { getCurrentUser } from '../utils/auth'
+import { getCurrentUserFromEvent } from "../utils/auth";
 
 export default defineEventHandler(async (event) => {
-  const token = getCookie(event, 'auth-token') ||
-                getHeader(event, 'authorization')?.replace('Bearer ', '')
-
-  const user = await getCurrentUser(token || null)
+  const user = await getCurrentUserFromEvent(event);
 
   if (user) {
-    event.context.user = user
+    event.context.user = user;
   }
-})
-
+});

@@ -1,20 +1,9 @@
 import db from "../../utils/db";
-import { getCurrentUser } from "../../utils/auth";
+import { basicValidation } from "../../utils/auth";
 import { TechSkillsSchema } from "../../utils/validation";
 
 export default defineEventHandler(async (event) => {
-  if (event.method !== "POST") {
-    throw createError({
-      statusCode: 405,
-      message: "Method not allowed",
-    });
-  }
-
-  const token =
-    getCookie(event, "auth-token") ||
-    getHeader(event, "authorization")?.replace("Bearer ", "");
-
-  const user = await getCurrentUser(token || null);
+  const user = await basicValidation(event, ["POST"]);
 
   if (!user) {
     throw createError({

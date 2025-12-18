@@ -1,68 +1,56 @@
-import db from '../../utils/db'
-import { getCurrentUser } from '../../utils/auth'
+import db from "../../utils/db";
+import { basicValidation } from "../../utils/auth";
 
 export default defineEventHandler(async (event) => {
-  if (event.method !== 'GET') {
-    throw createError({
-      statusCode: 405,
-      message: 'Method not allowed',
-    })
+  const authUser = await basicValidation(event, ["GET"]);
+
+  const query = getQuery(event);
+  const userType = query.userType as string;
+  const page = Math.max(1, Number(query.page || 1));
+  const limit = Math.min(100, Math.max(1, Number(query.limit || 10)));
+
+  const where: any = {};
+  if (["TEAM_LEADER", "INDIVIDUAL", "ADMIN"].includes(userType)) {
+    where.userType = userType;
   }
 
-  const token = getCookie(event, 'auth-token') || 
-                getHeader(event, 'authorization')?.replace('Bearer ', '')
+  // 2. Single Query fetch with Count Aggregation
+  const [users, totalCount] = await Promise.all([
+    db.user.findMany({
+      where,
+      select: {
+        id: true,
+        firstName: true,
+        whatsappNumber: true,
+        gender: true,
+        userType: true,
+        hasTeam: true,
+        emailVerified: true,
+        onboardingCompleted: true,
+        techSkills: { select: { proficiency: true } },
+        _count: { select: { techSkills: true } },
+      },
+      orderBy: { createdAt: "desc" },
+      skip: (page - 1) * limit,
+      take: limit,
+    }),
+    db.user.count({ where }),
+  ]);
 
-  const user = await getCurrentUser(token || null)
-
-  if (!user) {
-    throw createError({
-      statusCode: 401,
-      message: 'Unauthorized',
-    })
-  }
-
-  // Optional: Only allow admins to view all users
-  // Uncomment if needed:
-  // if (user.userType !== 'ADMIN') {
-  //   throw createError({
-  //     statusCode: 403,
-  //     message: 'Forbidden',
-  //   })
-  // }
-
-  const query = getQuery(event)
-  const userType = query.userType as string | undefined
-
-  // Build where clause
-  const where: any = {}
-  if (userType && ['TEAM_LEADER', 'INDIVIDUAL', 'ADMIN'].includes(userType)) {
-    where.userType = userType
-  }
-
-  const users = await db.user.findMany({
-    where,
-    select: {
-      id: true,
-      firstName: true,
-      lastName: true,
-      email: true,
-      whatsappNumber: true,
-      gender: true,
-      userType: true,
-      hasTeam: true,
-      emailVerified: true,
-      onboardingCompleted: true,
-      createdAt: true,
-    },
-    orderBy: {
-      createdAt: 'desc',
-    },
-  })
+  // 3. Clean Transformation
+  const formattedUsers = users.map(({ techSkills, _count, ...user }) => ({
+    ...user,
+    skillCount: _count.techSkills,
+    skillTotalPoints: techSkills.reduce((sum, s) => sum + s.proficiency, 0),
+  }));
 
   return {
     success: true,
-    users,
-    count: users.length,
-  }
-})
-
+    users: formattedUsers,
+    pagination: {
+      total: totalCount,
+      page,
+      totalPages: Math.ceil(totalCount / limit),
+    },
+  };
+});

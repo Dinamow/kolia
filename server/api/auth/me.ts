@@ -1,27 +1,17 @@
-import { getCurrentUser } from '../../utils/auth'
+import { basicValidation } from "../../utils/auth";
 
 export default defineEventHandler(async (event) => {
-  if (event.method !== 'GET') {
-    throw createError({
-      statusCode: 405,
-      message: 'Method not allowed',
-    })
-  }
-
-  const token = getCookie(event, 'auth-token')
-
-  const user = await getCurrentUser(token || null)
+  const user = await basicValidation(event, ["GET"]);
 
   if (!user) {
     throw createError({
       statusCode: 401,
-      message: 'Unauthorized',
-    })
+      message: "Unauthorized",
+    });
   }
 
   return {
     success: true,
     user,
-  }
-})
-
+  };
+});
