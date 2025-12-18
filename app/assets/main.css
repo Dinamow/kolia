@@ -1,16 +1,25 @@
-@import 'tailwindcss';
+@import "tailwindcss";
 @import "@nuxt/ui";
 
 @theme {
---color-cornflower-50: #f3f8fb;
---color-cornflower-100: #e4eef5;
---color-cornflower-200: #d0e2ed;
---color-cornflower-300: #afcfe1;
---color-cornflower-400: #96bdd6;
---color-cornflower-500: #6d9cc4;
---color-cornflower-600: #5a86b6;
---color-cornflower-700: #4f74a6;
---color-cornflower-800: #456088;
---color-cornflower-900: #3b506d;
---color-cornflower-950: #273344;
+  --color-cornflower-50: #f3f8fb;
+  --color-cornflower-100: #e4eef5;
+  --color-cornflower-200: #d0e2ed;
+  --color-cornflower-300: #afcfe1;
+  --color-cornflower-400: #96bdd6;
+  --color-cornflower-500: #6d9cc4;
+  --color-cornflower-600: #5a86b6;
+  --color-cornflower-700: #4f74a6;
+  --color-cornflower-800: #456088;
+  --color-cornflower-900: #3b506d;
+  --color-cornflower-950: #273344;
+}
+
+:root {
+  --color-primary: var(--color-cornflower-600);
+  --color-secondary: var(--color-cornflower-400);
+}
+
+body {
+  color: var(--color-cornflower-700);
 }
