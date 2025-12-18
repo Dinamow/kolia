@@ -7,5 +7,12 @@ export default defineNuxtConfig({
   vite: {
     plugins: [tailwindcss()],
   },
-  modules: ["@nuxt/eslint", "@nuxt/hints", "@nuxt/image", "@nuxt/ui"],
+  modules: [
+    "@nuxt/eslint",
+    "@nuxt/hints",
+    "@nuxt/image",
+    "@nuxt/ui",
+    // Local logger module using @nuxt/kit useLogger + runtime plugins
+    "./modules/app-logger.ts",
+  ],
 });

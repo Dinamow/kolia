@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import db from "./db";
+import { getCookie, createError } from "h3";
 import type { H3Event, EventHandlerRequest } from "h3";
 
 const JWT_SECRET =
@@ -50,7 +51,12 @@ async function getCurrentUser(token: string | null) {
 export async function getCurrentUserFromEvent(
   event: H3Event<EventHandlerRequest>
 ) {
-  const token = getCookie(event, "auth_token") || null;
+  const token = getCookie(event, "auth_token");
+  console.log(`the token: ${token}`);
+  
+  if (!token) {
+    return null;
+  }
   return getCurrentUser(token);
 }
 
@@ -64,6 +70,8 @@ export function basicValidation(
       message: "Method not allowed",
     });
   }
+  console.log(event.context);
+  
   if (!event.context.user) {
     throw createError({
       statusCode: 401,

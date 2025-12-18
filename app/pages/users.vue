@@ -265,9 +265,7 @@ const fetchUsers = async () => {
     query.append("limit", pageLimit.value.toString());
 
     const response = await $fetch(`/api/users?${query.toString()}`, {
-      headers: {
-        Authorization: `Bearer ${authToken.value}`,
-      },
+      credentials: 'include',
     });
 
     users.value = response.users;
@@ -333,6 +331,7 @@ const getPageNumbers = () => {
 };
 
 onMounted(() => {
+  // User is already authenticated by middleware
   fetchUsers();
 });
 </script>

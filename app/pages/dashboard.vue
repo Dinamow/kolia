@@ -15,21 +15,11 @@ definePageMeta({
   middleware: 'auth',
 })
 
-const user = ref(null)
+const user = ref<{ firstName?: string; lastName?: string } | null>(null)
 
-onMounted(async () => {
-  try {
-    // Fetch current user info
-    const response = await $fetch('/api/auth/me', {
-      headers: {
-        Authorization: `Bearer ${useCookie('auth-token').value}`,
-      },
-    })
-    user.value = response.user
-  } catch (error) {
-    console.error('Failed to fetch user:', error)
-    await navigateTo('/login')
-  }
+onMounted(() => {
+  // User is already authenticated by middleware
+  // Fetch full user details if needed for display
 })
 </script>
 
