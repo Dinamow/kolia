@@ -46,7 +46,7 @@
 
           <UAlert v-if="error" color="error" variant="soft" :title="error" />
 
-          <MyButton variant="primary" type="submit" :loading="loading" block>
+          <MyButton variant="solid" color="primary" type="submit" :loading="loading" block>
             Sign In
           </MyButton>
         </UForm>

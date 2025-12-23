@@ -23,7 +23,7 @@
             Create your account
           </h2>
         </div>
-        <UForm :state="form" class="space-y-6" @submit="onSubmit">
+        <form class="space-y-6" @submit.prevent="onSubmit">
           <div class="grid grid-cols-2 gap-4">
             <MyInput v-model="form.firstName" type="text" label="First Name" name="firstName" placeholder="John"
               variant="outline" required />
@@ -64,10 +64,10 @@
 
           <UAlert v-if="error" color="error" variant="soft" :title="error" class="mt-4" />
 
-          <MyButton variant="primary" type="submit" :loading="loading" block>
+          <MyButton variant="solid" color="primary" type="submit" :loading="loading" block>
             Sign Up
           </MyButton>
-        </UForm>
+        </form>
         <p class="text-cornflower-600">
           Already have an account?
           <NuxtLink to="/login" class="font-semibold text-cornflower-600 hover:text-cornflower-700 transition-colors">
@@ -125,6 +125,7 @@ const onSubmit = async () => {
     // Get the first error message
     const firstError = result.error.issues[0];
     error.value = firstError?.message || "Validation failed";
+    // Do not reset the form - just return early
     return;
   }
 

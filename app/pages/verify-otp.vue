@@ -12,16 +12,8 @@
         </p>
       </div>
       <UForm :state="form" class="mt-8 space-y-6" @submit="onSubmit">
-        <UFormField label="OTP Code" name="otp" required>
-          <UInput
-            v-model="form.otp"
-            placeholder="000000"
-            maxlength="6"
-            class="w-full text-center text-2xl tracking-widest"
-            @input="formatOTP"
-          />
-        </UFormField>
-
+        <MyInput v-model="form.otp" type="text" label="OTP Code" name="otp" placeholder="000000" variant="outline"
+          required />
         <UAlert
           v-if="error"
           color="error"
@@ -30,9 +22,9 @@
           class="mt-4"
         />
 
-        <UButton type="submit" block :loading="loading" class="mt-6">
+        <MyButton type="submit" block :loading="loading" class="mt-6">
           Verify Email
-        </UButton>
+        </MyButton>
       </UForm>
     </div>
   </div>
