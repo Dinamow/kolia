@@ -16,8 +16,10 @@
 }
 
 :root {
-  --color-primary: var(--color-cornflower-600);
-  --color-secondary: var(--color-cornflower-400);
+  --ui-primary: var(--color-cornflower-600);
+  --ui-secondary: var(--color-cornflower-400);
+    --ui-text-inverted: white;
+    
 }
 
 body {
