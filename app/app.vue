@@ -4,6 +4,7 @@ import "./assets/main.css";
 
 <template>
   <div>
+    <AppHeader />
     <NuxtRouteAnnouncer />
     <NuxtPage />
   </div>
