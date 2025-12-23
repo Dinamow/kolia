@@ -48,7 +48,7 @@
                 <div class="mt-3 flex gap-2">
                   <span :class="getUserTypeClass(user.userType)"
                     class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium">
-                    {{ user.userType }}
+                    {{ user.userType === 'TEAM_LEADER' ? 'Team Leader' : 'Team Member' }}
                   </span>
                 </div>
               </div>
@@ -57,12 +57,10 @@
 
           <!-- Profile Details -->
           <div class="px-6 py-6 border-b border-cornflower-100">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
                 <h3 class="text-xs font-semibold text-cornflower-600 uppercase tracking-wider mb-2">
                   Contact Information
-                </h3>
-                <div class="space-y-3">
+                </h3>    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
                   <div class="flex items-center gap-2">
                     <svg class="w-5 h-5 text-cornflower-600" fill="currentColor" viewBox="0 0 20 20">
                       <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path>
@@ -77,9 +75,7 @@
                   </div>
                   <div class="flex items-center gap-2">
                     <svg class="w-5 h-5 text-cornflower-600" fill="currentColor" viewBox="0 0 20 20">
-                      <path
-                        d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773c.346.842.934 1.932 1.856 2.854.922.922 2.012 1.51 2.854 1.856l.773-1.548a1 1 0 011.06-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 4 14.18 4 9.5V5a1 1 0 011-1h2.153z">
-                      </path>
+                      <path d="M10 0C4.477 0 0 4.477 0 10c0 1.89.525 3.66 1.438 5.168L0 20l4.832-1.438A9.956 9.956 0 0010 20c5.523 0 10-4.477 10-10S15.523 0 10 0zm5.487 14.134c-.227.636-1.347 1.236-1.873 1.287-.508.048-.987.228-3.318-.691-2.991-1.18-4.926-4.197-5.075-4.39-.148-.192-1.209-1.608-1.209-3.067 0-1.459.766-2.177 1.038-2.474.272-.297.594-.371.792-.371.198 0 .396.001.569.011.182.009.426-.069.667.509.248.595.842 2.054.916 2.203.074.148.124.322.025.514-.099.193-.148.313-.297.484-.148.172-.312.383-.446.514-.148.148-.302.308-.13.604.173.297.768 1.267 1.649 2.052 1.134.009 1.988.695 2.236.933.248.238.396.198.545.119.148-.079.633-.518.802-.695.172-.178.343-.148.57-.089.228.06 1.438.678 1.685.802.247.123.412.185.471.287.06.099.06.575-.167 1.211z" />
                     </svg>
                     <div>
                       <p class="text-xs text-cornflower-600">WhatsApp</p>
@@ -88,74 +84,8 @@
                       </p>
                     </div>
                   </div>
-                </div>
-              </div>
 
-              <div>
-                <h3 class="text-xs font-semibold text-cornflower-600 uppercase tracking-wider mb-2">
-                  Account Status
-                </h3>
-                <div class="space-y-3">
-                  <div class="flex items-center gap-2">
-                    <div :class="user.emailVerified ? 'bg-green-100' : 'bg-gray-100'
-                      " class="h-8 w-8 rounded-full flex items-center justify-center">
-                      <svg v-if="user.emailVerified" class="w-4 h-4 text-green-600" fill="currentColor"
-                        viewBox="0 0 20 20">
-                        <path fill-rule="evenodd"
-                          d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                          clip-rule="evenodd" />
-                      </svg>
-                      <svg v-else class="w-4 h-4 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd"
-                          d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                          clip-rule="evenodd" />
-                      </svg>
-                    </div>
-                    <div>
-                      <p class="text-xs text-cornflower-600">
-                        Email Verification
-                      </p>
-                      <p :class="user.emailVerified
-                          ? 'text-green-600'
-                          : 'text-gray-600'
-                        " class="text-sm font-medium">
-                        {{ user.emailVerified ? "Verified" : "Not Verified" }}
-                      </p>
-                    </div>
-                  </div>
-                  <div class="flex items-center gap-2">
-                    <div :class="user.onboardingCompleted
-                        ? 'bg-green-100'
-                        : 'bg-gray-100'
-                      " class="h-8 w-8 rounded-full flex items-center justify-center">
-                      <svg v-if="user.onboardingCompleted" class="w-4 h-4 text-green-600" fill="currentColor"
-                        viewBox="0 0 20 20">
-                        <path fill-rule="evenodd"
-                          d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                          clip-rule="evenodd" />
-                      </svg>
-                      <svg v-else class="w-4 h-4 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd"
-                          d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                          clip-rule="evenodd" />
-                      </svg>
-                    </div>
-                    <div>
-                      <p class="text-xs text-cornflower-600">Onboarding</p>
-                      <p :class="user.onboardingCompleted
-                          ? 'text-green-600'
-                          : 'text-gray-600'
-                        " class="text-sm font-medium">
-                        {{
-                          user.onboardingCompleted
-                            ? "Completed"
-                            : "Not Completed"
-                        }}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
+        
             </div>
           </div>
 

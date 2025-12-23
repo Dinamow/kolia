@@ -121,65 +121,6 @@
               </div>
             </div>
           </div>
-
-          <!-- Status -->
-          <div class="px-6 py-6">
-            <h2 class="text-lg font-semibold text-cornflower-900 mb-4">
-              Status
-            </h2>
-            <div class="space-y-3">
-              <div class="flex items-center gap-2">
-                <div :class="user.emailVerified ? 'bg-green-100' : 'bg-gray-100'"
-                  class="h-8 w-8 rounded-full flex items-center justify-center">
-                  <svg v-if="user.emailVerified" class="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd"
-                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                      clip-rule="evenodd" />
-                  </svg>
-                  <svg v-else class="w-4 h-4 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd"
-                      d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                      clip-rule="evenodd" />
-                  </svg>
-                </div>
-                <div>
-                  <p class="text-xs text-cornflower-600">Email Verification</p>
-                  <p :class="user.emailVerified ? 'text-green-600' : 'text-gray-600'
-                    " class="text-sm font-medium">
-                    {{ user.emailVerified ? "Verified" : "Not Verified" }}
-                  </p>
-                </div>
-              </div>
-
-              <div class="flex items-center gap-2">
-                <div :class="user.onboardingCompleted ? 'bg-green-100' : 'bg-gray-100'
-                  " class="h-8 w-8 rounded-full flex items-center justify-center">
-                  <svg v-if="user.onboardingCompleted" class="w-4 h-4 text-green-600" fill="currentColor"
-                    viewBox="0 0 20 20">
-                    <path fill-rule="evenodd"
-                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                      clip-rule="evenodd" />
-                  </svg>
-                  <svg v-else class="w-4 h-4 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd"
-                      d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                      clip-rule="evenodd" />
-                  </svg>
-                </div>
-                <div>
-                  <p class="text-xs text-cornflower-600">Onboarding</p>
-                  <p :class="user.onboardingCompleted
-                      ? 'text-green-600'
-                      : 'text-gray-600'
-                    " class="text-sm font-medium">
-                    {{
-                      user.onboardingCompleted ? "Completed" : "Not Completed"
-                    }}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
 
         <!-- Skills Section -->
@@ -195,8 +136,7 @@
                   Technical Skills
                 </h2>
               </div>
-              <NuxtLink to="/onboarding/tech-skills"
-                class="text-cornflower-600 hover:text-cornflower-700 font-medium text-sm">
+              <NuxtLink to="/profile/skills" class="text-cornflower-600 hover:text-cornflower-700 font-medium text-sm">
                 Edit Skills →
               </NuxtLink>
             </div>
@@ -243,7 +183,7 @@
             <p class="mt-1 text-cornflower-600 mb-4">
               Add your technical skills to complete your profile
             </p>
-            <NuxtLink to="/onboarding/tech-skills"
+            <NuxtLink to="/profile/skills"
               class="inline-block px-4 py-2 bg-cornflower-600 text-white rounded-md hover:bg-cornflower-700 transition-colors font-medium">
               Add Skills
             </NuxtLink>
@@ -315,7 +255,21 @@ const fetchProfile = async () => {
   error.value = "";
 
   try {
-    const response = await $fetch("/api/profile", {
+    // First, get the current user to retrieve the user ID
+    const meResponse = await $fetch("/api/auth/me", {
+      headers: {
+        Authorization: `Bearer ${authToken.value}`,
+      },
+    });
+
+    const userId = (meResponse as any).user?.id;
+
+    if (!userId) {
+      throw new Error("Unable to retrieve user ID");
+    }
+
+    // Then fetch the full profile with techSkills using the user ID
+    const response = await $fetch("/api/profile/" + userId, {
       headers: {
         Authorization: `Bearer ${authToken.value}`,
       },
@@ -324,7 +278,7 @@ const fetchProfile = async () => {
     user.value = (response as any).data || response;
     resetForm();
   } catch (err: any) {
-    error.value = err.data?.message || "Failed to load profile";
+    error.value = err.data?.message || err.message || "Failed to load profile";
     user.value = null;
   } finally {
     loading.value = false;
