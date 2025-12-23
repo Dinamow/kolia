@@ -2,16 +2,36 @@ import db from "../../utils/db";
 import { basicValidation } from "../../utils/auth";
 
 export default defineEventHandler(async (event) => {
-  const authUser = await basicValidation(event, ["GET"]);
+  await basicValidation(event, ["GET"]);
 
   const query = getQuery(event);
   const userType = query.userType as string;
+  const skillName = query.skillName as string;
+  const hasTeam = query.hasTeam as string;
   const page = Math.max(1, Number(query.page || 1));
   const limit = Math.min(100, Math.max(1, Number(query.limit || 10)));
 
   const where: any = {};
+
+  // Filter by user type
   if (["TEAM_LEADER", "INDIVIDUAL", "ADMIN"].includes(userType)) {
     where.userType = userType;
+  }
+
+  // Filter by hasTeam
+  if (hasTeam === "true") {
+    where.hasTeam = true;
+  } else if (hasTeam === "false") {
+    where.hasTeam = false;
+  }
+
+  // Filter by skill name - users who have this skill
+  if (skillName) {
+    where.techSkills = {
+      some: {
+        skillName: skillName,
+      },
+    };
   }
 
   // 2. Single Query fetch with Count Aggregation
@@ -25,8 +45,7 @@ export default defineEventHandler(async (event) => {
         gender: true,
         userType: true,
         hasTeam: true,
-        emailVerified: true,
-        onboardingCompleted: true,
+        email: true,
         techSkills: { select: { proficiency: true } },
         _count: { select: { techSkills: true } },
       },

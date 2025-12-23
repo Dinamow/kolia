@@ -42,7 +42,7 @@ Create a `.env` file in the root directory:
 
 ```env
 # Database
-DATABASE_URL="postgresql://user:password@localhost:5432/kolia?schema=public"
+DATABASE_URL="postgresql://user:password@localhost:5432/Teamy?schema=public"
 
 # JWT Secret (change this in production!)
 JWT_SECRET="your-super-secret-jwt-key-change-in-production"
